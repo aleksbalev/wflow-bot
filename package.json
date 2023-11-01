@@ -1,0 +1,10 @@
+{
+	"dependencies": {
+		"@netlify/functions": "^1.6.0",
+		"@slack/web-api": "^6.9.1",
+		"bitbucket": "^2.11.0"
+	},
+	"devDependencies": {
+		"@types/node": "^20.1.4"
+	}
+}
