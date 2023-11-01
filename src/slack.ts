@@ -22,7 +22,7 @@ async function handleSlashCommand(payload: SlackSlashCommandPayload) {
         if (transformedContent && transformedContent.length > 0) {
           await client.files.uploadV2({
             channel_id: payload.channel_id,
-            initial_comment: "Here is your readme :wink:",
+            initial_comment: "Here is your changelog :wink:",
             content: transformedContent[0],
             filename: "CHANGELOG.md",
           });
