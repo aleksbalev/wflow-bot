@@ -1,3 +1,8 @@
+type HandlerResult = {
+  statusCode: number;
+  body: string;
+};
+
 type SlackSlashCommandPayload = {
   token: string;
   team_id: string;
@@ -184,4 +189,86 @@ type NewItem = {
   spiceLevel: string;
   status?: string;
   submitter?: string;
+};
+
+type BitbucketPipelineUpdatePayload = {
+  repository: {
+    type: "repository";
+    full_name: string;
+    links: {
+      self: Record<string, any>;
+      html: Record<string, any>;
+      avatar: Record<string, any>;
+    };
+    name: string;
+    scm: string;
+    website: string | null;
+    owner: {
+      display_name: string;
+      links: Record<string, any>;
+      type: string;
+      uuid: string;
+      account_id: string;
+      nickname: string;
+    };
+    workspace: {
+      type: "workspace";
+      uuid: string;
+      name: string;
+      slug: string;
+      links: Record<string, any>;
+    };
+    is_private: boolean;
+    project: {
+      type: "project";
+      key: string;
+      uuid: string;
+      name: string;
+      links: Record<string, any>;
+    };
+    uuid: string;
+    parent: null;
+  };
+  actor: {
+    display_name: string;
+    links: {
+      self: Record<string, any>;
+      avatar: Record<string, any>;
+      html: Record<string, any>;
+    };
+    type: string;
+    uuid: string;
+    account_id: string;
+    nickname: string;
+  };
+  commit_status: {
+    key: string;
+    type: string;
+    state: string;
+    name: string;
+    refname: string;
+    commit: {
+      type: "commit";
+      hash: string;
+      date: string;
+      author: Record<string, any>;
+      message: string;
+      links: Record<string, any>;
+    };
+    url: string;
+    repository: {
+      type: "repository";
+      full_name: string;
+      links: Record<string, any>;
+      name: string;
+      uuid: string;
+    };
+    description: string;
+    created_on: string;
+    updated_on: string;
+    links: {
+      self: Record<string, any>;
+      commit: Record<string, any>;
+    };
+  };
 };

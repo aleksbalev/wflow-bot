@@ -1,7 +1,9 @@
 import { Bitbucket } from "bitbucket";
 
-const repoOwner = "devteam6k";
-const repoSlug = "wflow-main-app";
+const repoOwner =
+  process.env.NODE_MODE === "development" ? "AleksBL" : "devteam6k";
+const repoSlug =
+  process.env.NODE_MODE === "development" ? "wbot-test" : "wflow-main-app";
 
 function bitbucketApi() {
   return new Bitbucket({
@@ -16,7 +18,7 @@ export async function getBitbucketRepoChangelog() {
 
   try {
     const content = await bitbucket.repositories.readSrc({
-      commit: "develop",
+      commit: process.env.NODE_MODE === "development" ? "main" : "develop",
       repo_slug: repoSlug,
       workspace: repoOwner,
       path: "CHANGELOG.md",
