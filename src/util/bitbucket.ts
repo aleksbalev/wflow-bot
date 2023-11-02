@@ -1,7 +1,7 @@
 import { Bitbucket } from "bitbucket";
 
-const repoOwner = "AleksBL";
-const repoSlug = "wbot-test";
+const repoOwner = "devteam6k";
+const repoSlug = "wflow-main-app";
 
 function bitbucketApi() {
   return new Bitbucket({
@@ -16,7 +16,7 @@ export async function getBitbucketRepoChangelog() {
 
   try {
     const content = await bitbucket.repositories.readSrc({
-      commit: "main",
+      commit: "develop",
       repo_slug: repoSlug,
       workspace: repoOwner,
       path: "CHANGELOG.md",
