@@ -71,30 +71,6 @@ type SlackBlockInput = {
 
 type SlackBlock = SlackBlockSection | SlackBlockInput;
 
-type FoodOpinionModalState = {
-  values: {
-    opinion_block: {
-      opinion: {
-        type: "plain_text_input";
-        value: string;
-      };
-    };
-    spice_level_block: {
-      spice_level: {
-        type: "static_select";
-        selected_option: {
-          text: {
-            type: "plain_text";
-            text: string;
-            emoji: boolean;
-          };
-          value: string;
-        };
-      };
-    };
-  };
-};
-
 type ModalArgs = {
   trigger_id: string;
   id: string;
@@ -134,7 +110,6 @@ type SlackModalPayload = {
     blocks: SlackBlock[];
     private_metadata: string;
     callback_id: string;
-    state: FoodOpinionModalState;
     hash: string;
     title: {
       type: "plain_text";
