@@ -5,7 +5,7 @@ import { createHmac } from "crypto";
 
 export async function slackApi() {
   return new WebClient(process.env.SLACK_BOT_OAUTH_TOKEN, {
-    logLevel: LogLevel.DEBUG,
+    logLevel: LogLevel.INFO,
   });
   // const res = await fetch(`https://slack.com/api/${endpoint}`, {
   //   method: "POST",
