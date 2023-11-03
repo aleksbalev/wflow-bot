@@ -272,3 +272,137 @@ type BitbucketPipelineUpdatePayload = {
     };
   };
 };
+
+type AzurePipelinePayload = {
+  subscriptionId: string;
+  notificationId: number;
+  id: string;
+  eventType: string;
+  publisherId: string;
+  message: {
+    text: string;
+    html: string;
+    markdown: string;
+  };
+  detailedMessage: {
+    text: string;
+    html: string;
+    markdown: string;
+  };
+  resource: {
+    _links: {
+      self: unknown;
+      web: unknown;
+      sourceVersionDisplayUri: unknown;
+      timeline: unknown;
+      badge: unknown;
+    };
+    properties: Record<string, unknown>;
+    tags: unknown[];
+    validationResults: unknown[];
+    plans: unknown[];
+    templateParameters: Record<string, unknown>;
+    triggerInfo: Record<string, unknown>;
+    id: number;
+    buildNumber: string;
+    status: string;
+    result: string;
+    queueTime: string;
+    startTime: string;
+    finishTime: string;
+    url: string;
+    definition: {
+      drafts: unknown[];
+      id: number;
+      name: string;
+      url: string;
+      uri: string;
+      path: string;
+      type: string;
+      queueStatus: string;
+      revision: number;
+      project: Record<string, unknown>;
+    };
+    buildNumberRevision: number;
+    project: {
+      id: string;
+      name: string;
+      url: string;
+      state: string;
+      revision: number;
+      visibility: string;
+      lastUpdateTime: string;
+    };
+    uri: string;
+    sourceBranch: string;
+    sourceVersion: string;
+    queue: {
+      id: number;
+      name: string;
+      pool: Record<string, unknown>;
+    };
+    priority: string;
+    reason: string;
+    requestedFor: {
+      displayName: string;
+      url: string;
+      _links: Record<string, unknown>;
+      id: string;
+      uniqueName: string;
+      imageUrl: string;
+      descriptor: string;
+    };
+    requestedBy: {
+      displayName: string;
+      url: string;
+      _links: Record<string, unknown>;
+      id: string;
+      uniqueName: string;
+      imageUrl: string;
+      descriptor: string;
+    };
+    lastChangedDate: string;
+    lastChangedBy: {
+      displayName: string;
+      url: string;
+      _links: Record<string, unknown>;
+      id: string;
+      uniqueName: string;
+      imageUrl: string;
+      descriptor: string;
+    };
+    orchestrationPlan: {
+      planId: string;
+    };
+    logs: {
+      id: number;
+      type: string;
+      url: string;
+    };
+    repository: {
+      id: string;
+      type: string;
+      clean: string | null;
+      checkoutSubmodules: boolean;
+    };
+    retainedByRelease: boolean;
+    triggeredByBuild: Record<string, unknown> | null;
+    appendCommitMessageToRunName: boolean;
+  };
+  resourceVersion: string;
+  resourceContainers: {
+    collection: {
+      id: string;
+      baseUrl: string;
+    };
+    account: {
+      id: string;
+      baseUrl: string;
+    };
+    project: {
+      id: string;
+      baseUrl: string;
+    };
+  };
+  createdDate: string;
+};

@@ -1,11 +1,11 @@
 import { Bitbucket } from "bitbucket";
 
-const repoOwner =
+export const repoOwner =
   process.env.NODE_MODE === "development" ? "AleksBL" : "devteam6k";
-const repoSlug =
+export const repoSlug =
   process.env.NODE_MODE === "development" ? "wbot-test" : "wflow-main-app";
 
-function bitbucketApi() {
+export function bitbucketApi() {
   return new Bitbucket({
     auth: {
       token: `${process.env.BITBUCKET_ACCESS_TOKEN}`,
