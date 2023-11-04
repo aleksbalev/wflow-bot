@@ -32,49 +32,18 @@ type SlackBlockSection = {
   text: {
     type: "plain_text" | "mrkdwn";
     text: string;
-    verbatim?: boolean;
   };
 };
 
-type SlackBlockInput = {
-  type: "input";
-  block_id: string;
-  label: {
+type SlackBlockHeader = {
+  type: "header";
+  text: {
     type: "plain_text";
     text: string;
-    emoji?: boolean;
-  };
-  hint?: {
-    type: "plain_text";
-    text: string;
-    emoji?: boolean;
-  };
-  optional?: boolean;
-  dispatch_action?: boolean;
-  element: {
-    type: string;
-    action_id: string;
-    placeholder?: {
-      type: string;
-      text: string;
-      emoji?: boolean;
-    };
-    options?: {
-      text: {
-        type: "plain_text";
-        text: string;
-        emoji?: boolean;
-      };
-      value: string;
-    }[];
-    initial_value?: string;
-    dispatch_action_config?: {
-      trigger_actions_on: string[];
-    };
   };
 };
 
-type SlackBlock = SlackBlockSection | SlackBlockInput;
+type SlackBlock = SlackBlockSection;
 
 type ModalArgs = {
   trigger_id: string;
@@ -148,6 +117,13 @@ type BlockArgs = {
 
 type SectionBlockArgs = {
   text: string;
+};
+
+type SectionDeployBlockArgs = {
+  tasks: string;
+  date: string;
+  result: string;
+  version: string;
 };
 
 type InputBlockArgs = {
@@ -290,13 +266,6 @@ type AzurePipelinePayload = {
     markdown: string;
   };
   resource: {
-    _links: {
-      self: unknown;
-      web: unknown;
-      sourceVersionDisplayUri: unknown;
-      timeline: unknown;
-      badge: unknown;
-    };
     properties: Record<string, unknown>;
     tags: unknown[];
     validationResults: unknown[];
@@ -405,4 +374,12 @@ type AzurePipelinePayload = {
     };
   };
   createdDate: string;
+};
+
+type CommitPayload = {
+  values: [
+    {
+      message: string;
+    },
+  ];
 };

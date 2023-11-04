@@ -35,8 +35,27 @@ export function verifySlackRequest(request: HandlerEvent) {
   return `v0=${hash}` === signature;
 }
 
-//export const blocks = {
-//  section: () => {},
-//  input: () => {},
-//  select: () => {},
-//}
+export const blocks = {
+  header: ({ text }: SectionBlockArgs): SlackBlockHeader => {
+    return {
+      type: "header",
+      text: {
+        type: "plain_text",
+        text: text,
+      },
+    };
+  },
+  sectionDeploy: ({
+    date,
+    version,
+    tasks,
+  }: SectionDeployBlockArgs): SlackBlockSection => {
+    return {
+      type: "section",
+      text: {
+        type: "mrkdwn",
+        text: `>*Datetime*\n>${date}\n>\n>*Version*\n>v${version}\n>\n>*Tasks*\n>${tasks}`,
+      },
+    };
+  },
+};
