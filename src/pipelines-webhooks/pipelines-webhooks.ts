@@ -25,19 +25,14 @@ export const handler: Handler = async (event) => {
     try {
       body = JSON.parse(event.body) as AzurePipelinePayload;
       const { resource } = body;
-      const [repoOwner, repoSlug] = resource.repository.id.split("/");
       const branchSplitted = resource.sourceBranch.split("/");
       const branch = branchSplitted[branchSplitted.length - 1];
       const headerName = relevantReposNamesMap.get(branch);
 
       if (relevantRepos.includes(branch)) {
-        const commits = await getPullRequestsCommits(
-          resource.sourceVersion,
-          repoSlug,
-          repoOwner,
-        );
+        const commits = await getPullRequestsCommits(resource.sourceVersion);
 
-        const version = await getVersionFromRepo(branch, repoSlug, repoOwner);
+        const version = await getVersionFromRepo(branch);
 
         let tasksIds;
         if (commits?.data) {

@@ -1,11 +1,11 @@
 import { Bitbucket } from "bitbucket";
 
-export const repoOwner =
+const repoOwner =
   process.env.NODE_MODE === "development" ? "AleksBL" : "devteam6k";
-export const repoSlug =
+const repoSlug =
   process.env.NODE_MODE === "development" ? "wbot-test" : "wflow-main-app";
 
-export function bitbucketApi() {
+function bitbucketApi() {
   return new Bitbucket({
     auth: {
       token: `${process.env.BITBUCKET_ACCESS_TOKEN}`,
@@ -34,15 +34,13 @@ export async function getBitbucketRepoChangelog() {
 
 export async function getPullRequestsCommits(
   commit: string,
-  repoSlug: string,
-  workspace: string,
 ): Promise<{ data: CommitPayload } | null> {
   const bitbucket = bitbucketApi();
 
   const pullRequest = await bitbucket.repositories.listPullrequestsForCommit({
     commit,
     repo_slug: repoSlug,
-    workspace,
+    workspace: repoOwner,
   });
 
   if (pullRequest.data.values && pullRequest.data.values.length > 0) {
@@ -52,7 +50,7 @@ export async function getPullRequestsCommits(
       return bitbucket.repositories.listPullRequestCommits({
         pull_request_id: prId,
         repo_slug: repoSlug,
-        workspace,
+        workspace: repoOwner,
       });
     }
   }
@@ -62,8 +60,6 @@ export async function getPullRequestsCommits(
 
 export async function getVersionFromRepo(
   sourceBranch: string,
-  repoSlug: string,
-  repoOwner: string,
 ): Promise<string> {
   const packageJSON = await bitbucketApi().repositories.readSrc({
     commit: sourceBranch,
