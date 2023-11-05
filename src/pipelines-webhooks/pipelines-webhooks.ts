@@ -30,6 +30,7 @@ export const handler: Handler = async (event) => {
       const branch = branchSplitted[branchSplitted.length - 1];
       const headerName = relevantReposNamesMap.get(branch);
 
+      console.log(repoOwner, repoSlug);
       if (relevantRepos.includes(branch)) {
         const commits = await getPullRequestsCommits(
           resource.sourceVersion,
