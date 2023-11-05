@@ -122,7 +122,6 @@ type SectionBlockArgs = {
 type SectionDeployBlockArgs = {
   tasks: string;
   date: string;
-  result: string;
   version: string;
 };
 

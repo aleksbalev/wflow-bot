@@ -1,64 +1,24 @@
 import { Handler } from "@netlify/functions";
-import { bitbucketApi, repoOwner } from "../util/bitbucket";
+import { getPullRequestsCommits, getVersionFromRepo } from "../util/bitbucket";
+import { cetDate, filterDuplicates } from "../util/utils";
 import { blocks, slackApi } from "../util/slack";
-import { cetDate } from "../util/format";
-
-const bitbucket = bitbucketApi();
-
-async function getPullRequestsCommits(
-  commit: string,
-  repoSlug: string,
-  workspace: string,
-): Promise<{ data: CommitPayload } | null> {
-  const pullRequest = await bitbucket.repositories.listPullrequestsForCommit({
-    commit,
-    repo_slug: repoSlug,
-    workspace,
-  });
-
-  if (pullRequest.data.values && pullRequest.data.values.length > 0) {
-    const prId = pullRequest.data.values[0].id;
-
-    if (prId) {
-      return bitbucket.repositories.listPullRequestCommits({
-        pull_request_id: prId,
-        repo_slug: repoSlug,
-        workspace: repoOwner,
-      });
-    }
-  }
-
-  return null;
-}
+import {
+  relevantRepos,
+  relevantReposNamesMap,
+} from "./pipelines-webhooks.const";
 
 function getTasksIds(commits: CommitPayload): string {
   const regex = /WCOM-\d{4,}/g;
   const messages = commits.values.map((v) => v.message);
   const combinedMessages = messages.join(" ");
   const foundMatches = combinedMessages.match(regex) || [];
-  const resultIds = foundMatches.join(", ");
+  const resultIds = filterDuplicates(foundMatches).join(", ");
 
   return resultIds;
 }
 
-async function getVersionFromRepo(
-  sourceBranch: string,
-  repoSlug: string,
-  repoOwner: string,
-): Promise<string> {
-  const packageJSON = await bitbucket.repositories.readSrc({
-    commit: sourceBranch,
-    repo_slug: repoSlug,
-    workspace: repoOwner,
-    path: "package.json",
-  });
-
-  const version = JSON.parse(packageJSON.data as string).version;
-
-  return version;
-}
-
 export const handler: Handler = async (event) => {
+  const slackClient = await slackApi();
   let body = null;
 
   if (event.body) {
@@ -68,8 +28,9 @@ export const handler: Handler = async (event) => {
       const [repoOwner, repoSlug] = resource.repository.id.split("/");
       const branchSplitted = resource.sourceBranch.split("/");
       const branch = branchSplitted[branchSplitted.length - 1];
+      const headerName = relevantReposNamesMap.get(branch);
 
-      if (branch === "main") {
+      if (relevantRepos.includes(branch)) {
         const commits = await getPullRequestsCommits(
           resource.sourceVersion,
           repoSlug,
@@ -78,30 +39,39 @@ export const handler: Handler = async (event) => {
 
         const version = await getVersionFromRepo(branch, repoSlug, repoOwner);
 
-        const slackClient = await slackApi();
-
         let tasksIds;
         if (commits?.data) {
           tasksIds = getTasksIds(commits.data);
         }
 
         await slackClient.chat.postMessage({
-          channel: "C05A1JM6QKB",
+          channel: `${process.env.DEPLOY_INFO_CHANNEL_ID}`,
+          text: `Deployment data - version: ${version}; tasks: ${
+            tasksIds && tasksIds.length > 0 ? tasksIds : "-"
+          }; date: ${cetDate(resource.finishTime)}`,
           blocks: [
             blocks.header({
-              text: `Deployed on ${branch.toUpperCase()}`,
+              text: `Deployed on ${
+                headerName
+                  ? headerName.toUpperCase()
+                  : "unrecognized".toUpperCase()
+              }`,
             }),
             blocks.sectionDeploy({
               date: cetDate(resource.finishTime),
-              tasks: tasksIds && tasksIds.length > 0 ? tasksIds : "-",
-              result: resource.result,
               version: version,
+              tasks: tasksIds && tasksIds.length > 0 ? tasksIds : "-",
             }),
           ],
         });
       }
     } catch (err) {
-      console.log(err);
+      await slackClient.chat.postMessage({
+        channel: `${process.env.DEPLOY_INFO_CHANNEL_ID}`,
+        text: "Woopsie doopsie, something went wrong",
+      });
+
+      console.error(err);
     }
   }
 

@@ -31,3 +31,48 @@ export async function getBitbucketRepoChangelog() {
     throw err;
   }
 }
+
+export async function getPullRequestsCommits(
+  commit: string,
+  repoSlug: string,
+  workspace: string,
+): Promise<{ data: CommitPayload } | null> {
+  const bitbucket = bitbucketApi();
+
+  const pullRequest = await bitbucket.repositories.listPullrequestsForCommit({
+    commit,
+    repo_slug: repoSlug,
+    workspace,
+  });
+
+  if (pullRequest.data.values && pullRequest.data.values.length > 0) {
+    const prId = pullRequest.data.values[0].id;
+
+    if (prId) {
+      return bitbucket.repositories.listPullRequestCommits({
+        pull_request_id: prId,
+        repo_slug: repoSlug,
+        workspace: repoOwner,
+      });
+    }
+  }
+
+  return null;
+}
+
+export async function getVersionFromRepo(
+  sourceBranch: string,
+  repoSlug: string,
+  repoOwner: string,
+): Promise<string> {
+  const packageJSON = await bitbucketApi().repositories.readSrc({
+    commit: sourceBranch,
+    repo_slug: repoSlug,
+    workspace: repoOwner,
+    path: "package.json",
+  });
+
+  const version = JSON.parse(packageJSON.data as string).version;
+
+  return version;
+}

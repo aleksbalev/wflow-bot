@@ -14,3 +14,20 @@ export function cetDate(inputDate: string): string {
 
   return formattedDate;
 }
+
+export function filterDuplicates(
+  array: string[] | number[],
+): (string | number)[] {
+  const arrayWithoutDuplicates = [];
+
+  const uniqueValues: { [key: string]: boolean } = {};
+
+  for (const item of array) {
+    if (!uniqueValues[item]) {
+      arrayWithoutDuplicates.push(item);
+      uniqueValues[item] = true;
+    }
+  }
+
+  return arrayWithoutDuplicates;
+}
