@@ -52,7 +52,7 @@ export async function getPullRequestsCommits(
       return bitbucket.repositories.listPullRequestCommits({
         pull_request_id: prId,
         repo_slug: repoSlug,
-        workspace: repoOwner,
+        workspace,
       });
     }
   }
