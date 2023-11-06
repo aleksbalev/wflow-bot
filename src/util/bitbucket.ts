@@ -37,26 +37,30 @@ export async function getPullRequestsCommits(
 ): Promise<{ data: CommitPayload } | null> {
   const bitbucket = bitbucketApi();
 
-  const pullRequest = await bitbucket.repositories.listPullrequestsForCommit({
-    commit,
-    repo_slug: repoSlug,
-    workspace: repoOwner,
-  });
+  try {
+    const pullRequest = await bitbucket.repositories.listPullrequestsForCommit({
+      commit,
+      repo_slug: repoSlug,
+      workspace: repoOwner,
+    });
 
-  console.log("commit: ", commit);
-  console.log("repoSlug: ", repoSlug);
-  console.log("repoOwner: ", repoOwner);
-  if (pullRequest.data.values && pullRequest.data.values.length > 0) {
-    const prId = pullRequest.data.values[0].id;
+    console.log("commit: ", commit);
+    console.log("repoSlug: ", repoSlug);
+    console.log("repoOwner: ", repoOwner);
+    if (pullRequest.data.values && pullRequest.data.values.length > 0) {
+      const prId = pullRequest.data.values[0].id;
 
-    console.log("prId: ", prId);
-    if (prId) {
-      return bitbucket.repositories.listPullRequestCommits({
-        pull_request_id: prId,
-        repo_slug: repoSlug,
-        workspace: repoOwner,
-      });
+      console.log("prId: ", prId);
+      if (prId) {
+        return bitbucket.repositories.listPullRequestCommits({
+          pull_request_id: prId,
+          repo_slug: repoSlug,
+          workspace: repoOwner,
+        });
+      }
     }
+  } catch (err) {
+    console.error("Error in getPullRequestsCommits: ", err);
   }
 
   return null;
