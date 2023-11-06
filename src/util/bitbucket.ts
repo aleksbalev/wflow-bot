@@ -43,12 +43,13 @@ export async function getPullRequestsCommits(
     workspace: repoOwner,
   });
 
+  console.log("commit: ", commit);
+  console.log("repoSlug: ", repoSlug);
+  console.log("repoOwner: ", repoOwner);
   if (pullRequest.data.values && pullRequest.data.values.length > 0) {
     const prId = pullRequest.data.values[0].id;
 
     console.log("prId: ", prId);
-    console.log("repoSlug: ", repoSlug);
-    console.log("repoOwner: ", repoOwner);
     if (prId) {
       return bitbucket.repositories.listPullRequestCommits({
         pull_request_id: prId,
