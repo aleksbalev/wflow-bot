@@ -48,7 +48,12 @@ export const handler: Handler = async (event) => {
             blocks.header({
               text: `Deployed on ${
                 headerName
-                  ? headerName.toUpperCase()
+                  ? `${headerName.toUpperCase()} ${
+                      branch === "master" ||
+                      (branch === "main"
+                        ? ":party_blob: :party_blob: :party_blob:"
+                        : "")
+                    }`
                   : "unrecognized".toUpperCase()
               }`,
             }),

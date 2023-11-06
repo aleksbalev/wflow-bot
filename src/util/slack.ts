@@ -72,7 +72,6 @@ export const attachments = {
           short: false,
         },
       ],
-      thumb_url: "https://wflow-bot.netlify.app/src/assets/gifs/hell_spawn.gif",
     };
   },
 };
