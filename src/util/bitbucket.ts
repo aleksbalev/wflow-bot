@@ -44,9 +44,9 @@ export async function getPullRequestsCommits(
       workspace: repoOwner,
     });
 
-    console.log("commit: ", commit);
-    console.log("repoSlug: ", repoSlug);
-    console.log("repoOwner: ", repoOwner);
+    console.log("pullRequest: ", pullRequest);
+    console.log("pullRequest.data: ", pullRequest.data);
+    console.log("pullRequest.data.values: ", pullRequest.data.values);
     if (pullRequest.data.values && pullRequest.data.values.length > 0) {
       const prId = pullRequest.data.values[0].id;
 
