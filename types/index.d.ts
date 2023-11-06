@@ -28,19 +28,14 @@ type SlackInteractivityPayload = {
 type SlackPayload = SlackSlashCommandPayload | SlackInteractivityPayload;
 
 type SlackBlockSection = {
-  type: "section";
-  text: {
-    type: "plain_text" | "mrkdwn";
-    text: string;
-  };
-};
-
-type SlackBlockHeader = {
-  type: "header";
-  text: {
-    type: "plain_text";
-    text: string;
-  };
+  text?: string;
+  color: string;
+  fields: {
+    title: string;
+    value: string;
+    short: boolean;
+  }[];
+  thumb_url: string;
 };
 
 type SlackBlock = SlackBlockSection;
