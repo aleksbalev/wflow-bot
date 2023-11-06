@@ -1,7 +1,7 @@
 import { Handler } from "@netlify/functions";
 import { getPullRequestsCommits, getVersionFromRepo } from "../util/bitbucket";
 import { cetDate, filterDuplicates } from "../util/utils";
-import { blocks, slackApi } from "../util/slack";
+import { attachments, blocks, slackApi } from "../util/slack";
 import {
   relevantRepos,
   relevantReposNamesMap,
@@ -52,7 +52,9 @@ export const handler: Handler = async (event) => {
                   : "unrecognized".toUpperCase()
               }`,
             }),
-            blocks.sectionDeploy({
+          ],
+          attachments: [
+            attachments.sectionDeploy({
               date: cetDate(resource.finishTime),
               version: version,
               tasks: tasksIds && tasksIds.length > 0 ? tasksIds : "-",
@@ -63,7 +65,12 @@ export const handler: Handler = async (event) => {
     } catch (err) {
       await slackClient.chat.postMessage({
         channel: `${process.env.DEPLOY_INFO_CHANNEL_ID}`,
-        text: "Woopsie doopsie, something went wrong",
+        attachments: [
+          {
+            text: "Woopsie doopsie, something went wrong",
+            color: "#ee1a27",
+          },
+        ],
       });
 
       console.error(err);
