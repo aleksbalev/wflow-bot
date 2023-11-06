@@ -35,7 +35,9 @@ export const handler: Handler = async (event) => {
 
         const version = await getVersionFromRepo(branch);
 
-        console.log(commits?.data.values);
+        console.log("sourceVersion: ", resource.sourceVersion);
+        console.log("commits in events: ", commits?.data);
+
         let tasksIds;
         if (commits?.data) {
           tasksIds = getTasksIds(commits.data);
