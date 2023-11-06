@@ -1,45 +1,16 @@
 import type { Handler } from "@netlify/functions";
 
 import { parse } from "querystring";
-import { slackApi, verifySlackRequest } from "./util/slack";
+import { verifySlackRequest } from "./util/slack";
 
-import { getBitbucketRepoChangelog } from "./util/bitbucket";
+import { releaseLog } from "./slash-commands/release-log";
 
-async function handleSlashCommand(payload: SlackSlashCommandPayload) {
+async function handleSlashCommand(
+  payload: SlackSlashCommandPayload,
+): Promise<HandlerResult> {
   switch (payload.command) {
     case "/release-log":
-      const regexPattern = payload.text
-        ? `## ${payload.text}([\\s\\S]*?)---`
-        : "## Unreleased([\\s\\S]*?)---";
-      const content = await getBitbucketRepoChangelog();
-      const transformedContent = `${content.data}`.match(
-        new RegExp(regexPattern),
-      );
-
-      const client = await slackApi();
-
-      try {
-        if (transformedContent && transformedContent.length > 0) {
-          await client.files.uploadV2({
-            channel_id: payload.channel_id,
-            initial_comment: "Here is your changelog :wink:",
-            content: transformedContent[0],
-            filename: "CHANGELOG.md",
-          });
-        } else {
-          await client.chat.postMessage({
-            channel: payload.channel_id,
-            text: "No matching content found in the repository. :disappointed:",
-          });
-        }
-      } catch (err) {
-        console.error(err);
-
-        return {
-          statusCode: 500,
-          body: "Internal Server Error",
-        };
-      }
+      await releaseLog(payload);
 
       break;
     default:

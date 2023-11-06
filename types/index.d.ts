@@ -1,3 +1,8 @@
+type HandlerResult = {
+  statusCode: number;
+  body: string;
+};
+
 type SlackSlashCommandPayload = {
   token: string;
   team_id: string;
@@ -27,49 +32,18 @@ type SlackBlockSection = {
   text: {
     type: "plain_text" | "mrkdwn";
     text: string;
-    verbatim?: boolean;
   };
 };
 
-type SlackBlockInput = {
-  type: "input";
-  block_id: string;
-  label: {
+type SlackBlockHeader = {
+  type: "header";
+  text: {
     type: "plain_text";
     text: string;
-    emoji?: boolean;
-  };
-  hint?: {
-    type: "plain_text";
-    text: string;
-    emoji?: boolean;
-  };
-  optional?: boolean;
-  dispatch_action?: boolean;
-  element: {
-    type: string;
-    action_id: string;
-    placeholder?: {
-      type: string;
-      text: string;
-      emoji?: boolean;
-    };
-    options?: {
-      text: {
-        type: "plain_text";
-        text: string;
-        emoji?: boolean;
-      };
-      value: string;
-    }[];
-    initial_value?: string;
-    dispatch_action_config?: {
-      trigger_actions_on: string[];
-    };
   };
 };
 
-type SlackBlock = SlackBlockSection | SlackBlockInput;
+type SlackBlock = SlackBlockSection;
 
 type ModalArgs = {
   trigger_id: string;
@@ -145,6 +119,12 @@ type SectionBlockArgs = {
   text: string;
 };
 
+type SectionDeployBlockArgs = {
+  tasks: string;
+  date: string;
+  version: string;
+};
+
 type InputBlockArgs = {
   initial_value?: string;
   hint?: string;
@@ -184,4 +164,221 @@ type NewItem = {
   spiceLevel: string;
   status?: string;
   submitter?: string;
+};
+
+type BitbucketPipelineUpdatePayload = {
+  repository: {
+    type: "repository";
+    full_name: string;
+    links: {
+      self: Record<string, any>;
+      html: Record<string, any>;
+      avatar: Record<string, any>;
+    };
+    name: string;
+    scm: string;
+    website: string | null;
+    owner: {
+      display_name: string;
+      links: Record<string, any>;
+      type: string;
+      uuid: string;
+      account_id: string;
+      nickname: string;
+    };
+    workspace: {
+      type: "workspace";
+      uuid: string;
+      name: string;
+      slug: string;
+      links: Record<string, any>;
+    };
+    is_private: boolean;
+    project: {
+      type: "project";
+      key: string;
+      uuid: string;
+      name: string;
+      links: Record<string, any>;
+    };
+    uuid: string;
+    parent: null;
+  };
+  actor: {
+    display_name: string;
+    links: {
+      self: Record<string, any>;
+      avatar: Record<string, any>;
+      html: Record<string, any>;
+    };
+    type: string;
+    uuid: string;
+    account_id: string;
+    nickname: string;
+  };
+  commit_status: {
+    key: string;
+    type: string;
+    state: string;
+    name: string;
+    refname: string;
+    commit: {
+      type: "commit";
+      hash: string;
+      date: string;
+      author: Record<string, any>;
+      message: string;
+      links: Record<string, any>;
+    };
+    url: string;
+    repository: {
+      type: "repository";
+      full_name: string;
+      links: Record<string, any>;
+      name: string;
+      uuid: string;
+    };
+    description: string;
+    created_on: string;
+    updated_on: string;
+    links: {
+      self: Record<string, any>;
+      commit: Record<string, any>;
+    };
+  };
+};
+
+type AzurePipelinePayload = {
+  subscriptionId: string;
+  notificationId: number;
+  id: string;
+  eventType: string;
+  publisherId: string;
+  message: {
+    text: string;
+    html: string;
+    markdown: string;
+  };
+  detailedMessage: {
+    text: string;
+    html: string;
+    markdown: string;
+  };
+  resource: {
+    properties: Record<string, unknown>;
+    tags: unknown[];
+    validationResults: unknown[];
+    plans: unknown[];
+    templateParameters: Record<string, unknown>;
+    triggerInfo: Record<string, unknown>;
+    id: number;
+    buildNumber: string;
+    status: string;
+    result: string;
+    queueTime: string;
+    startTime: string;
+    finishTime: string;
+    url: string;
+    definition: {
+      drafts: unknown[];
+      id: number;
+      name: string;
+      url: string;
+      uri: string;
+      path: string;
+      type: string;
+      queueStatus: string;
+      revision: number;
+      project: Record<string, unknown>;
+    };
+    buildNumberRevision: number;
+    project: {
+      id: string;
+      name: string;
+      url: string;
+      state: string;
+      revision: number;
+      visibility: string;
+      lastUpdateTime: string;
+    };
+    uri: string;
+    sourceBranch: string;
+    sourceVersion: string;
+    queue: {
+      id: number;
+      name: string;
+      pool: Record<string, unknown>;
+    };
+    priority: string;
+    reason: string;
+    requestedFor: {
+      displayName: string;
+      url: string;
+      _links: Record<string, unknown>;
+      id: string;
+      uniqueName: string;
+      imageUrl: string;
+      descriptor: string;
+    };
+    requestedBy: {
+      displayName: string;
+      url: string;
+      _links: Record<string, unknown>;
+      id: string;
+      uniqueName: string;
+      imageUrl: string;
+      descriptor: string;
+    };
+    lastChangedDate: string;
+    lastChangedBy: {
+      displayName: string;
+      url: string;
+      _links: Record<string, unknown>;
+      id: string;
+      uniqueName: string;
+      imageUrl: string;
+      descriptor: string;
+    };
+    orchestrationPlan: {
+      planId: string;
+    };
+    logs: {
+      id: number;
+      type: string;
+      url: string;
+    };
+    repository: {
+      id: string;
+      type: string;
+      clean: string | null;
+      checkoutSubmodules: boolean;
+    };
+    retainedByRelease: boolean;
+    triggeredByBuild: Record<string, unknown> | null;
+    appendCommitMessageToRunName: boolean;
+  };
+  resourceVersion: string;
+  resourceContainers: {
+    collection: {
+      id: string;
+      baseUrl: string;
+    };
+    account: {
+      id: string;
+      baseUrl: string;
+    };
+    project: {
+      id: string;
+      baseUrl: string;
+    };
+  };
+  createdDate: string;
+};
+
+type CommitPayload = {
+  values: [
+    {
+      message: string;
+    },
+  ];
 };
