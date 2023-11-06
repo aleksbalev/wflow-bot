@@ -9,7 +9,6 @@ import {
 
 function getTasksIds(commits: CommitPayload): string {
   const regex = /WCOM-\d{4,}/g;
-  console.log(commits);
   const messages = commits.values.map((v) => v.message);
   const combinedMessages = messages.join(" ");
   const foundMatches = combinedMessages.match(regex) || [];

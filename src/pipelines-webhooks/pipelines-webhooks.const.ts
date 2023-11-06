@@ -1,7 +1,6 @@
 export const relevantRepos = [
   "main",
   "master",
-  "develop",
   "preprod",
   "preview",
   "rc",

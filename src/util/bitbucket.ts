@@ -44,13 +44,9 @@ export async function getPullRequestsCommits(
       workspace: repoOwner,
     });
 
-    console.log("pullRequest: ", pullRequest);
-    console.log("pullRequest.data: ", pullRequest.data);
-    console.log("pullRequest.data.values: ", pullRequest.data.values);
     if (pullRequest.data.values && pullRequest.data.values.length > 0) {
       const prId = pullRequest.data.values[0].id;
 
-      console.log("prId: ", prId);
       if (prId) {
         return bitbucket.repositories.listPullRequestCommits({
           pull_request_id: prId,
