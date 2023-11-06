@@ -35,7 +35,6 @@ type SlackBlockSection = {
     value: string;
     short: boolean;
   }[];
-  thumb_url: string;
 };
 
 type SlackBlock = SlackBlockSection;
