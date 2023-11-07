@@ -22,6 +22,7 @@ export const handler: Handler = async (event) => {
   let body = null;
 
   if (event.body) {
+    console.log("event.body", event.body);
     try {
       body = JSON.parse(event.body) as AzurePipelinePayload;
       const { resource } = body;
