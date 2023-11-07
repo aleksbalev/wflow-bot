@@ -17,12 +17,23 @@ function getTasksIds(commits: CommitPayload): string {
   return resultIds;
 }
 
+function headerFormat(headerName?: string, branch?: string) {
+  if (branch === "master" || branch === "main") {
+    return `:party_blob: :party_blob: :party_blob: Deployed on ${
+      headerName ? `${headerName.toUpperCase()}` : "unrecognized".toUpperCase()
+    } :party_blob: :party_blob: :party_blob:`;
+  }
+
+  return `Deployed on ${
+    headerName ? `${headerName.toUpperCase()}` : "unrecognized".toUpperCase()
+  }`;
+}
+
 export const handler: Handler = async (event) => {
   const slackClient = await slackApi();
   let body = null;
 
   if (event.body) {
-    console.log("event.body", event.body);
     try {
       body = JSON.parse(event.body) as AzurePipelinePayload;
       const { resource } = body;
@@ -47,16 +58,7 @@ export const handler: Handler = async (event) => {
           }; date: ${cetDate(resource.finishTime)}`,
           blocks: [
             blocks.header({
-              text: `Deployed on ${
-                headerName
-                  ? `${headerName.toUpperCase()} ${
-                      branch === "master" ||
-                      (branch === "main"
-                        ? ":party_blob: :party_blob: :party_blob:"
-                        : "")
-                    }`
-                  : "unrecognized".toUpperCase()
-              }`,
+              text: headerFormat(headerName, branch),
             }),
           ],
           attachments: [
