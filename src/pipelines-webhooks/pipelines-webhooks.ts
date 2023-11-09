@@ -1,18 +1,31 @@
 import { Handler } from "@netlify/functions";
-import { getPullRequestsCommits, getVersionFromRepo } from "../util/bitbucket";
+import {
+  getPullRequestsByCommit,
+  getPullRequestsCommits,
+  getVersionFromRepo,
+} from "../util/bitbucket";
 import { cetDate, filterDuplicates } from "../util/utils";
 import { blocks, slackApi } from "../util/slack";
 import {
   relevantRepos,
   relevantReposNamesMap,
 } from "./pipelines-webhooks.const";
+import { Schema } from "bitbucket";
 
-function getTasksIds(commits: CommitPayload): string {
+function getTasksIds(
+  commit: Schema.Commit | Schema.Commit[],
+): string | undefined {
+  let resultIds: string | undefined = "";
   const regex = /WCOM-\d{4,}/g;
-  const messages = commits.values.map((v) => v.message);
-  const combinedMessages = messages.join(" ");
-  const foundMatches = combinedMessages.match(regex) || [];
-  const resultIds = filterDuplicates(foundMatches).join(", ");
+
+  if (Array.isArray(commit)) {
+    const messages = commit.map((v) => v.message);
+    const combinedMessages = messages.join(" ");
+    const foundMatches = combinedMessages.match(regex) || [];
+    resultIds = filterDuplicates(foundMatches).join(", ");
+  } else {
+    resultIds = commit.message?.match(regex)?.join(", ");
+  }
 
   return resultIds;
 }
@@ -30,7 +43,15 @@ export const handler: Handler = async (event) => {
       const headerName = relevantReposNamesMap.get(branch);
 
       if (relevantRepos.includes(branch)) {
-        const commits = await getPullRequestsCommits(resource.sourceVersion);
+        const pullRequests = await getPullRequestsByCommit(
+          resource.sourceVersion,
+          resource.triggerInfo["ci.sourceSha"],
+        );
+
+        const commits = await getPullRequestsCommits(
+          resource.sourceVersion,
+          pullRequests,
+        );
 
         const version = await getVersionFromRepo(branch);
 
