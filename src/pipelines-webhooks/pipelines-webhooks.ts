@@ -55,7 +55,6 @@ export const handler: Handler = async (event) => {
       if (relevantRepos.includes(branch)) {
         const pullRequests = await getPullRequestsByCommit(
           resource.sourceVersion,
-          resource.triggerInfo["ci.sourceSha"],
         );
 
         const commits = await getPullRequestsCommits(
