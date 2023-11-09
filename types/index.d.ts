@@ -264,7 +264,9 @@ type AzurePipelinePayload = {
     validationResults: unknown[];
     plans: unknown[];
     templateParameters: Record<string, unknown>;
-    triggerInfo: Record<string, unknown>;
+    triggerInfo: {
+      "ci.sourceSha": string;
+    };
     id: number;
     buildNumber: string;
     status: string;
@@ -367,12 +369,4 @@ type AzurePipelinePayload = {
     };
   };
   createdDate: string;
-};
-
-type CommitPayload = {
-  values: [
-    {
-      message: string;
-    },
-  ];
 };
