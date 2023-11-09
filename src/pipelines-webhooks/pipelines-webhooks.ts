@@ -12,14 +12,12 @@ import {
 } from "./pipelines-webhooks.const";
 import { Schema } from "bitbucket";
 
-function getTasksIds(
-  commit: Schema.Commit | Schema.Commit[],
-): string | undefined {
+function getTasksIds(commit: Schema.Commit): string | undefined {
   let resultIds: string | undefined = "";
   const regex = /WCOM-\d{4,}/g;
 
-  if (Array.isArray(commit)) {
-    const messages = commit.map((v) => v.message);
+  if (commit.values && Array.isArray(commit.values)) {
+    const messages = commit.values.map((v: Schema.Commit) => v.message);
     const combinedMessages = messages.join(" ");
     const foundMatches = combinedMessages.match(regex) || [];
     resultIds = filterDuplicates(foundMatches).join(", ");
