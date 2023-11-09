@@ -31,7 +31,6 @@ export async function getBitbucketRepoChangelog() {
 
 export async function getPullRequestsByCommit(
   commitHash: string,
-  parentCommitHash: string,
 ): Promise<Schema.Pullrequest[] | null> {
   let pullRequests = await bitbucket.repositories.listPullrequestsForCommit({
     commit: commitHash,
@@ -46,11 +45,19 @@ export async function getPullRequestsByCommit(
   }
 
   if (pullRequestsValues && pullRequestsValues?.length === 0) {
-    pullRequests = await bitbucket.repositories.listPullrequestsForCommit({
-      commit: parentCommitHash,
+    let lastCommit = await bitbucket.repositories.getCommit({
+      commit: commitHash,
       repo_slug: repoSlug,
       workspace: repoOwner,
     });
+
+    if (lastCommit.data && lastCommit.data?.parents) {
+      pullRequests = await bitbucket.repositories.listPullrequestsForCommit({
+        commit: lastCommit.data.parents[0].hash ?? commitHash,
+        repo_slug: repoSlug,
+        workspace: repoOwner,
+      });
+    }
 
     pullRequestsValues = pullRequests?.data.values;
   }
