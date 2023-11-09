@@ -5,7 +5,7 @@ import {
   getVersionFromRepo,
 } from "../util/bitbucket";
 import { cetDate, filterDuplicates } from "../util/utils";
-import { blocks, slackApi } from "../util/slack";
+import { attachments, blocks, slackApi } from "../util/slack";
 import {
   relevantRepos,
   relevantReposNamesMap,
@@ -28,6 +28,18 @@ function getTasksIds(
   }
 
   return resultIds;
+}
+
+function headerFormat(headerName?: string, branch?: string) {
+  if (branch === "master" || branch === "main") {
+    return `:party_blob: :party_blob: :party_blob: Deployed on ${
+      headerName ? `${headerName.toUpperCase()}` : "unrecognized".toUpperCase()
+    } :party_blob: :party_blob: :party_blob:`;
+  }
+
+  return `Deployed on ${
+    headerName ? `${headerName.toUpperCase()}` : "unrecognized".toUpperCase()
+  }`;
 }
 
 export const handler: Handler = async (event) => {
@@ -67,13 +79,11 @@ export const handler: Handler = async (event) => {
           }; date: ${cetDate(resource.finishTime)}`,
           blocks: [
             blocks.header({
-              text: `Deployed on ${
-                headerName
-                  ? headerName.toUpperCase()
-                  : "unrecognized".toUpperCase()
-              }`,
+              text: headerFormat(headerName, branch),
             }),
-            blocks.sectionDeploy({
+          ],
+          attachments: [
+            attachments.sectionDeploy({
               date: cetDate(resource.finishTime),
               version: version,
               tasks: tasksIds && tasksIds.length > 0 ? tasksIds : "-",
@@ -84,7 +94,12 @@ export const handler: Handler = async (event) => {
     } catch (err) {
       await slackClient.chat.postMessage({
         channel: `${process.env.DEPLOY_INFO_CHANNEL_ID}`,
-        text: "Woopsie doopsie, something went wrong",
+        attachments: [
+          {
+            text: "Woopsie doopsie, something went wrong",
+            color: "#ee1a27",
+          },
+        ],
       });
 
       console.error(err);

@@ -5,7 +5,7 @@ import { createHmac } from "crypto";
 
 export async function slackApi() {
   return new WebClient(process.env.SLACK_BOT_OAUTH_TOKEN, {
-    logLevel: LogLevel.DEBUG,
+    logLevel: LogLevel.INFO,
   });
   // const res = await fetch(`https://slack.com/api/${endpoint}`, {
   //   method: "POST",
@@ -36,7 +36,7 @@ export function verifySlackRequest(request: HandlerEvent) {
 }
 
 export const blocks = {
-  header: ({ text }: SectionBlockArgs): SlackBlockHeader => {
+  header: ({ text }: SectionBlockArgs) => {
     return {
       type: "header",
       text: {
@@ -45,17 +45,33 @@ export const blocks = {
       },
     };
   },
+};
+
+export const attachments = {
   sectionDeploy: ({
     date,
     version,
     tasks,
   }: SectionDeployBlockArgs): SlackBlockSection => {
     return {
-      type: "section",
-      text: {
-        type: "mrkdwn",
-        text: `>*Datetime*\n>${date}\n>\n>*Version*\n>v${version}\n>\n>*Tasks*\n>${tasks}`,
-      },
+      color: "#36a64f",
+      fields: [
+        {
+          title: "Datetime",
+          value: date,
+          short: true,
+        },
+        {
+          title: "Version",
+          value: version,
+          short: true,
+        },
+        {
+          title: "Tasks",
+          value: tasks,
+          short: false,
+        },
+      ],
     };
   },
 };
