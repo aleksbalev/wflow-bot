@@ -20,7 +20,11 @@ function getTasksIds(commit: Schema.Commit): string | undefined {
     const messages = commit.values.map((v: Schema.Commit) => v.message);
     const combinedMessages = messages.join(" ");
     const foundMatches = combinedMessages.match(regex) || [];
-    resultIds = filterDuplicates(foundMatches).join(", ");
+    resultIds = filterDuplicates(foundMatches)
+      .map((match) => {
+        return `<https://6kswcz.atlassian.net/jira/software/projects/WCOM/boards/7?selectedIssue=${match}|${match}>`;
+      })
+      .join(", ");
   } else {
     resultIds = commit.message?.match(regex)?.join(", ");
   }
