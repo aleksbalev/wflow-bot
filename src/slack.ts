@@ -43,8 +43,6 @@ export const handler: Handler = async (event) => {
     return handleSlashCommand(body as SlackSlashCommandPayload);
   }
 
-  // TODO handle interactivity (e.g. context commands, modals)
-
   return {
     statusCode: 200,
     body: "TODO: handle Slack commands and interactivity",
